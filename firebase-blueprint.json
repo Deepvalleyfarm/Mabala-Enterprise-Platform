@@ -1,0 +1,230 @@
+{
+  "entities": {
+    "Tenant": {
+      "title": "Tenant",
+      "description": "Multi-tenant SaaS organization registry representing farms, cooperatives, veterinary clinics, or agribusinesses.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique tenant identifier" },
+        "name": { "type": "string", "description": "Organization or farm name" },
+        "type": { "type": "string", "enum": ["Farm", "Cooperative", "Veterinary_Clinic", "Agribusiness"] },
+        "plan": { "type": "string", "enum": ["Seedling", "Grower", "Harvest", "Unlimited"] },
+        "status": { "type": "string", "enum": ["Trial", "Active", "Suspended"] },
+        "credits": { "type": "number", "description": "SaaS credit balance" },
+        "modules": { "type": "array", "description": "Enabled feature modules" },
+        "storageUsedGB": { "type": "number", "description": "Current storage consumption in Gigabytes" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "type", "plan", "status", "credits"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User account profiling inside the administration database under Role-Based Access Control.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["Platform_Admin", "Tenant_Admin", "Farm_Manager", "Accountant", "Veterinarian", "Extension_Officer"] },
+        "mfaEnforced": { "type": "boolean" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "tenantId", "email", "role"]
+    },
+    "CropCycle": {
+      "title": "CropCycle",
+      "description": "Enterprise agricultural crop production record across cereal, legume, cash, and horticulture crops.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "fieldName": { "type": "string" },
+        "cropCategory": { "type": "string", "enum": ["Cereals", "Legumes", "Cash_Crops", "Horticulture", "Fruits"] },
+        "cropName": { "type": "string" },
+        "acreage": { "type": "number" },
+        "status": { "type": "string", "enum": ["Planned", "Planted", "Harvested"] },
+        "plantingDate": { "type": "string", "format": "date-time" },
+        "expectedHarvest": { "type": "string", "format": "date-time" },
+        "inputCosts": { "type": "number" },
+        "yieldPerHectare": { "type": "number" },
+        "diseaseStatus": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "cropCategory", "cropName", "acreage", "status"]
+    },
+    "Livestock": {
+      "title": "Livestock",
+      "description": "RFID/QR-tracked animal registry for beef, dairy, sheep, or goats.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tagId": { "type": "string", "description": "RFID or QR Code identifier" },
+        "tenantId": { "type": "string" },
+        "breed": { "type": "string" },
+        "category": { "type": "string", "enum": ["Cattle", "Sheep", "Goats", "Pigs"] },
+        "birthDate": { "type": "string" },
+        "healthStatus": { "type": "string", "enum": ["Healthy", "Treatment", "Quarantine"] },
+        "vaccinationCompleted": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tagId", "tenantId", "category", "healthStatus"]
+    },
+    "PoultryBatch": {
+      "title": "PoultryBatch",
+      "description": "Poultry batch management for broilers or layers.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "batchName": { "type": "string" },
+        "type": { "type": "string", "enum": ["Broilers", "Layers", "Village_Chickens"] },
+        "birdCount": { "type": "number" },
+        "mortality": { "type": "number" },
+        "feedConsumedKG": { "type": "number" },
+        "eggCount": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "type", "birdCount"]
+    },
+    "FishPond": {
+      "title": "FishPond",
+      "description": "Aquaculture pond, tank, or cage management registry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string", "enum": ["Tilapia", "Catfish"] },
+        "fingerlingsCount": { "type": "number" },
+        "biomass": { "type": "number" },
+        "mortality": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "name", "category", "fingerlingsCount"]
+    },
+    "AccountingRecord": {
+      "title": "AccountingRecord",
+      "description": "Enterprise IFRS-compliant agricultural ledger transaction registry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "type": { "type": "string", "enum": ["Income", "Expense"] },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "description": { "type": "string" },
+        "complianceSRA": { "type": "boolean" },
+        "date": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "type", "category", "amount", "date"]
+    },
+    "SupportTicket": {
+      "title": "SupportTicket",
+      "description": "Multi-tenant support ticketing registry with status lifecycle tracking.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["Open", "In_Progress", "Resolved"] },
+        "reply": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "subject", "message", "status"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable security operation audit logging registry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "action": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "device": { "type": "string" },
+        "ipAddress": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "action", "timestamp"]
+    },
+    "AiTokenAccess": {
+      "title": "AiTokenAccess",
+      "description": "AI Operations billing ledger for recommendation engines.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "promptType": { "type": "string" },
+        "costUSD": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "promptType", "costUSD"]
+    },
+    "AdCampaign": {
+      "title": "AdCampaign",
+      "description": "Agribusiness supplier advertising scheduler registry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "supplier": { "type": "string" },
+        "impressions": { "type": "number" },
+        "clicks": { "type": "number" },
+        "revenueUSD": { "type": "number" },
+        "status": { "type": "string", "enum": ["Active", "Paused", "Scheduled"] }
+      },
+      "required": ["id", "name", "impressions", "clicks", "revenueUSD", "status"]
+    }
+  },
+  "firestore": {
+    "/tenants/{tenantId}": {
+      "schema": "Tenant",
+      "description": "Central core of multi-tenant registry."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Accounts database with specific RBAC roles."
+    },
+    "/cropCycles/{cycleId}": {
+      "schema": "CropCycle",
+      "description": "Detailed multi-tenant crop operations tracking."
+    },
+    "/livestock/{animalId}": {
+      "schema": "Livestock",
+      "description": "Livestock telemetry and vaccination records."
+    },
+    "/poultryBatches/{batchId}": {
+      "schema": "PoultryBatch",
+      "description": "Poultry batch parameters."
+    },
+    "/fishPonds/{pondId}": {
+      "schema": "FishPond",
+      "description": "Aquaculture pond metrics."
+    },
+    "/accounting/{recordId}": {
+      "schema": "AccountingRecord",
+      "description": "Ledger of financial entries."
+    },
+    "/supportTickets/{ticketId}": {
+      "schema": "SupportTicket",
+      "description": "Ticketing and helpdesk system."
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Immutable auditing pipeline."
+    },
+    "/aiOperations/{aiId}": {
+      "schema": "AiTokenAccess",
+      "description": "Generative model tokens ledger."
+    },
+    "/ads/{adId}": {
+      "schema": "AdCampaign",
+      "description": "Global ad scheduling records."
+    }
+  }
+}

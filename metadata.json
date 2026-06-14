@@ -1,0 +1,6 @@
+{
+  "name": "Mabala Enterprise Administration Platform (MEAP)",
+  "description": "Enterprise-grade command, governance, and real-time monitoring console for agricultural operations, tenant SaaS systems, and security in the Mabala ecosystem.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

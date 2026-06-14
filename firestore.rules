@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net: Default deny everything
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Central helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Rules for SaaS Tenants
+    match /tenants/{tenantId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(tenantId);
+    }
+
+    // Rules for Users
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(userId);
+    }
+
+    // Rules for Crop Cycles
+    match /cropCycles/{cycleId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(cycleId);
+    }
+
+    // Rules for Livestock
+    match /livestock/{animalId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(animalId);
+    }
+
+    // Rules for Poultry Batches
+    match /poultryBatches/{batchId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(batchId);
+    }
+
+    // Rules for Fish Ponds
+    match /fishPonds/{pondId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(pondId);
+    }
+
+    // Rules for Accounting Entries
+    match /accounting/{recordId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(recordId);
+    }
+
+    // Rules for Support Tickets
+    match /supportTickets/{ticketId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(ticketId);
+    }
+
+    // Rules for Security Audit Logs
+    match /auditLogs/{logId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(logId);
+    }
+
+    // Rules for AI Tokens Ledger
+    match /aiOperations/{aiId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(aiId);
+    }
+
+    // Rules for Sponsored Advertising Campaigns
+    match /ads/{adId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isValidId(adId);
+    }
+  }
+}
